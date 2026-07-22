@@ -110,16 +110,16 @@
       color: #7ecfff;
     }
 
-    .node-apache {
-      background: linear-gradient(135deg, #3d1a00, #1e0d00);
-      border-color: #c45f1a;
-      color: #ffa05e;
-    }
-
     .node-lb {
       background: linear-gradient(135deg, #1a3320, #0d1f12);
       border-color: #27ae60;
       color: #6ddf9a;
+    }
+
+    .node-aaas {
+      background: linear-gradient(135deg, #3d1a00, #1e0d00);
+      border-color: #c45f1a;
+      color: #ffa05e;
     }
 
     .node-jboss {
@@ -149,6 +149,22 @@
       position: relative;
       padding: 0 4px;
       min-width: 56px;
+    }
+
+    .connector-dual {
+      min-width: 70px;
+    }
+
+    .lb-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .lb-stack .node {
+      min-width: 130px;
+      min-height: 66px;
     }
 
     /* Vertical fan lines for 1-to-many */
@@ -262,6 +278,45 @@
       padding-left: 2px;
     }
 
+    /* ── APACHE GROUP ───────────────────────────────────────── */
+    .apache-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border: 1px dashed #6a3a13;
+      border-radius: 12px;
+      background: rgba(196, 95, 26, 0.06);
+    }
+
+    .apache-group .group-label {
+      color: #c98a5a;
+    }
+
+    .apache-group .server-group {
+      border-color: rgba(196, 95, 26, 0.45);
+      background: rgba(30, 13, 0, 0.5);
+      min-width: 180px;
+    }
+
+    .apache-group .server-group-title {
+      color: #e1a271;
+    }
+
+    .apache-group .server-group .node {
+      min-width: 0;
+      min-height: 46px;
+      padding: 7px 9px;
+      font-size: 0.68rem;
+      letter-spacing: 0.2px;
+    }
+
+    .apache-group .server-group .node .icon {
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
     /* ── TIBCO GROUP ─────────────────────────────────────────── */
     .tibco-group {
       display: flex;
@@ -361,7 +416,7 @@
 <body>
 
   <h1>&#9741; Schema Architetturale PDC</h1>
-  <p class="subtitle">Flusso dati da SII → Apache → Load Balancer → JBoss/TIBCO raggruppati per server → Database</p>
+  <p class="subtitle">Flusso dati da SII → Load Balancer → JBoss ↔ Bilanciatori ↔ TIBCO → Database</p>
 
   <div class="diagram">
 
@@ -376,56 +431,50 @@
       </div>
     </div>
 
-    <!-- connector SII → Apache -->
+    <!-- connector SII → LB1 -->
     <div class="connector">
       <svg class="svg-connector" width="60" height="20">
         <defs>
           <marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#4aafff" opacity="0.7"/>
-          </marker>
-        </defs>
-        <line x1="0" y1="10" x2="50" y2="10" stroke="#2e7bc4" stroke-width="2" marker-end="url(#arr1)"/>
-      </svg>
-    </div>
-
-    <!-- ── 2. APACHE ───────────────────────────────────── -->
-    <div class="col">
-      <div class="col-label">Reverse Proxy</div>
-      <a class="node node-apache"
-         href="https://placeholder.example.com/apache"
-         target="_blank"
-         rel="noopener noreferrer"
-         data-tooltip="Apache HTTP Server as a Service">
-        <span class="icon">🔶</span>
-        <span class="label">Apache<br/>aaS</span>
-        <span class="sublabel">HTTP Proxy</span>
-      </a>
-    </div>
-
-    <!-- connector Apache → LB1 -->
-    <div class="connector">
-      <svg class="svg-connector" width="60" height="20">
-        <defs>
-          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L0,6 L8,3 z" fill="#6ddf9a" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="0" y1="10" x2="50" y2="10" stroke="#27ae60" stroke-width="2" marker-end="url(#arr2)"/>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#27ae60" stroke-width="2" marker-end="url(#arr1)"/>
       </svg>
     </div>
 
-    <!-- ── 3. LOAD BALANCER 1 ──────────────────────────── -->
+    <!-- ── 3. APACHE AAAS (x2) ─────────────────────────── -->
     <div class="col">
-      <div class="col-label">Bilanciatore</div>
-      <a class="node node-lb"
-         href="http://4ele-pdc.enelint.global/jkstatus"
-         target="_blank"
-         rel="noopener noreferrer"
-         data-tooltip="Network Load Balancer — Layer 4">
-        <span class="icon">⚖️</span>
-        <span class="label">4ele-pdc</span>
-        <span class="sublabel">Network LB</span>
-      </a>
+      <div class="col-label">Apache in DMZ</div>
+      <div class="apache-group">
+        <div class="group-label">Apache on premise</div>
+        <div class="server-grid">
+          <div class="server-group">
+            <div class="server-group-title">elaawipdcf02</div>
+            <a class="node node-aaas"
+               href="http://elaawipdcf02.dmzmi.enel/jkstatus"
+               target="_blank"
+               rel="noopener noreferrer"
+               data-tooltip="Apache server elaawipdcf02">
+              <span class="icon">🔶</span>
+              <span class="label">4elepdc</span>
+              <span class="sublabel">jkstatus</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">elaawipdcf03</div>
+            <a class="node node-aaas"
+               href="http://elaawipdcf03.dmzmi.enel/jkstatus"
+               target="_blank"
+               rel="noopener noreferrer"
+               data-tooltip="Apache server elaawipdcf03">
+              <span class="icon">🔶</span>
+              <span class="label">4elepdc</span>
+              <span class="sublabel">jkstatus</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- connector LB1 → JBoss -->
@@ -494,41 +543,53 @@
       </div>
     </div>
 
-    <!-- connector JBoss → LB2 -->
-    <div class="connector">
-      <svg class="svg-connector" width="60" height="20">
+    <!-- connector JBoss ↔ LB2/LB3 -->
+    <div class="connector connector-dual">
+      <svg class="svg-connector" width="70" height="142">
         <defs>
           <marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L0,6 L8,3 z" fill="#6ddf9a" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="0" y1="10" x2="50" y2="10" stroke="#27ae60" stroke-width="2" marker-end="url(#arr4)"/>
+        <line x1="0" y1="33" x2="60" y2="33" stroke="#27ae60" stroke-width="2" marker-end="url(#arr4)"/>
+        <line x1="60" y1="109" x2="0" y2="109" stroke="#27ae60" stroke-width="2" marker-end="url(#arr4)"/>
       </svg>
     </div>
 
-    <!-- ── 5. LOAD BALANCER 2 ──────────────────────────── -->
+    <!-- ── 5. LOAD BALANCER 2 + REVERSE ─────────────────── -->
     <div class="col">
-      <div class="col-label">Bilanciatore</div>
-      <a class="node node-lb"
-         href="http://4ele-ws-pdc.enelint.global/balancer-manager/"
-         target="_blank"
-         rel="noopener noreferrer"
-         data-tooltip="Network Load Balancer — Layer 4">
-        <span class="icon">⚖️</span>
-        <span class="label">4ele-ws-pdc</span>
-        <span class="sublabel">Network LB</span>
-      </a>
+      <div class="lb-stack">
+        <a class="node node-aaas"
+           href="http://4ele-ws-pdc.enelint.global/balancer-manager/"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-tooltip="AAAS node verso TIBCO">
+          <span class="icon">⚖️</span>
+          <span class="label">4ele-ws-pdc</span>
+          <span class="sublabel">AAAS</span>
+        </a>
+        <a class="node node-aaas"
+           href="http://4ele-pdc.enelint.global/jkstatus"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-tooltip="AAAS node di ritorno verso JBoss">
+          <span class="icon">⚖️</span>
+          <span class="label">4ele-pdc</span>
+          <span class="sublabel">AAAS</span>
+        </a>
+      </div>
     </div>
 
-    <!-- connector LB2 → TIBCO -->
-    <div class="connector">
-      <svg class="svg-connector" width="60" height="20">
+    <!-- connector LB2/LB3 ↔ TIBCO -->
+    <div class="connector connector-dual">
+      <svg class="svg-connector" width="70" height="142">
         <defs>
           <marker id="arr5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L0,6 L8,3 z" fill="#f7dc6f" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="0" y1="10" x2="50" y2="10" stroke="#d4ac0d" stroke-width="2" marker-end="url(#arr5)"/>
+        <line x1="0" y1="33" x2="60" y2="33" stroke="#d4ac0d" stroke-width="2" marker-end="url(#arr5)"/>
+        <line x1="60" y1="109" x2="0" y2="109" stroke="#d4ac0d" stroke-width="2" marker-end="url(#arr5)"/>
       </svg>
     </div>
 
@@ -594,7 +655,6 @@
   <!-- ── LEGEND ──────────────────────────────────────── -->
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#2e7bc4"></div> SII</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#c45f1a"></div> Apache aaS</div>
     <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div> Load Balancer</div>
     <div class="legend-item"><div class="legend-dot" style="background:#8e44ad"></div> JBoss (×8)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#d4ac0d"></div> TIBCO BW (×4)</div>
