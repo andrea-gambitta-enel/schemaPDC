@@ -195,6 +195,45 @@
       background: rgba(142, 68, 173, 0.04);
     }
 
+    .server-grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .server-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(125, 90, 154, 0.35);
+      background: rgba(22, 13, 35, 0.45);
+      min-width: 145px;
+    }
+
+    .server-group-title {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a98dc0;
+    }
+
+    .server-group .node {
+      min-width: 0;
+      width: 100%;
+      min-height: 56px;
+      padding: 10px 12px;
+    }
+
+    .server-group .node .icon {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
     .group-label {
       font-size: 0.65rem;
       text-transform: uppercase;
@@ -214,6 +253,15 @@
       border: 1px dashed #5a4400;
       border-radius: 12px;
       background: rgba(212, 172, 13, 0.04);
+    }
+
+    .tibco-group .server-group {
+      border-color: rgba(212, 172, 13, 0.4);
+      background: rgba(35, 24, 0, 0.45);
+    }
+
+    .tibco-group .server-group-title {
+      color: #d8bb4d;
     }
 
     /* ── LEGEND ──────────────────────────────────────────────── */
@@ -263,16 +311,25 @@
 
     /* ── RESPONSIVE ──────────────────────────────────────────── */
     @media (max-width: 1100px) {
-      .diagram { flex-direction: column; align-items: center; }
-      .connector { transform: rotate(90deg); }
+      .diagram {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .connector { transform: none; }
       .arrow-line { width: 40px; }
+      .server-grid {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+      }
+      .server-group { min-width: 145px; }
     }
   </style>
 </head>
 <body>
 
   <h1>&#9741; Schema Architetturale PDC</h1>
-  <p class="subtitle">Flusso dati da SII → Apache → Load Balancer → JBoss × 8 → Load Balancer → TIBCO × 4 → Database</p>
+  <p class="subtitle">Flusso dati da SII → Apache → Load Balancer → JBoss/TIBCO raggruppati per server → Database</p>
 
   <div class="diagram">
 
@@ -342,23 +399,15 @@
       </a>
     </div>
 
-    <!-- connector LB1 → JBoss (fan) -->
-    <div class="connector" style="min-width:70px;">
-      <svg class="svg-connector" width="70" height="460">
+    <!-- connector LB1 → JBoss -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
         <defs>
-          <marker id="arr3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#c39bd3" opacity="0.7"/>
+          <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#c39bd3" opacity="0.7"/>
           </marker>
         </defs>
-        <!-- 8 lines fanning out: center = 230, spacing = 52 -->
-        <line x1="0"  y1="230" x2="30"  y2="26"  stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="78"  stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="130" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="182" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="278" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="330" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="382" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
-        <line x1="0"  y1="230" x2="30"  y2="434" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#8e44ad" stroke-width="2" marker-end="url(#arr3)"/>
       </svg>
     </div>
 
@@ -366,58 +415,57 @@
     <div class="col">
       <div class="col-label">Application Server</div>
       <div class="jboss-group">
-        <div class="group-label">JBoss Cluster (×8)</div>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/1" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 1">
-          <span class="icon">☕</span><span class="label">i1jbepdcauir1</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/2" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 2">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir2</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/3" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 3">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir3</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/4" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 4">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir4</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/5" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 5">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir5</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/6" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 6">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir6</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/7" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 7">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir7</span>
-        </a>
-        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
-           href="https://placeholder.example.com/jboss/8" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 8">
-            <span class="icon">☕</span><span class="label">i1jbepdcauir8</span>
-        </a>
+        <div class="group-label">JBoss Cluster raggruppato per server</div>
+        <div class="server-grid">
+          <div class="server-group">
+            <div class="server-group-title">Server elaawipdcj11</div>
+            <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 1">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir1</span>
+            </a>
+            <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 5">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir5</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawipdcj12</div>
+            <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 2">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir2</span>
+            </a>
+            <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 6">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir6</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawipdcj13</div>
+            <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 3">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir3</span>
+            </a>
+            <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 7">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir7</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawipdcj14</div>
+            <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 4">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir4</span>
+            </a>
+            <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 8">
+              <span class="icon">☕</span><span class="label">i1jbepdcauir8</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- connector JBoss → LB2 (fan) -->
-    <div class="connector" style="min-width:70px;">
-      <svg class="svg-connector" width="70" height="460">
+    <!-- connector JBoss → LB2 -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
         <defs>
-          <marker id="arr4" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#6ddf9a" opacity="0.7"/>
+          <marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#6ddf9a" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="40" y1="26"  x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="78"  x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="130" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="182" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="278" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="330" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="382" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
-        <line x1="40" y1="434" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#27ae60" stroke-width="2" marker-end="url(#arr4)"/>
       </svg>
     </div>
 
@@ -435,18 +483,15 @@
       </a>
     </div>
 
-    <!-- connector LB2 → TIBCO (fan) -->
-    <div class="connector" style="min-width:70px;">
-      <svg class="svg-connector" width="70" height="280">
+    <!-- connector LB2 → TIBCO -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
         <defs>
-          <marker id="arr5" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#f7dc6f" opacity="0.7"/>
+          <marker id="arr5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#f7dc6f" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="0" y1="140" x2="40" y2="44"  stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
-        <line x1="0" y1="140" x2="40" y2="108" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
-        <line x1="0" y1="140" x2="40" y2="172" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
-        <line x1="0" y1="140" x2="40" y2="236" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#d4ac0d" stroke-width="2" marker-end="url(#arr5)"/>
       </svg>
     </div>
 
@@ -454,38 +499,45 @@
     <div class="col">
       <div class="col-label">Integration Layer</div>
       <div class="tibco-group">
-        <div class="group-label">TIBCO BW Cluster (×4)</div>
-        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
-           href="https://placeholder.example.com/tibco/node1" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 1">
-          <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua03</span>
-        </a>
-        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
-           href="https://placeholder.example.com/tibco/node2" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 2">
-          <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua05</span>
-        </a>
-        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
-           href="https://placeholder.example.com/tibco/node3" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 3">
-          <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua09</span>
-        </a>
-        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
-           href="https://placeholder.example.com/tibco/node4" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 4">
-          <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua10</span>
-        </a>
+        <div class="group-label">TIBCO BW raggruppato per server</div>
+        <div class="server-grid">
+          <div class="server-group">
+            <div class="server-group-title">Server elaawifoua03</div>
+            <a class="node node-tibco" href="https://elaawifoua03.risorse.enel:8778/tea/view/BusinessWorks/appnodes/default?domain=dterfour09869&agentID=BW6Network&cool_filter_level-1=%257B%2522geekMode%2522%253Afalse%252C%2522filterData%2522%253A%257B%2522data%2522%253A%255B%255D%252C%2522coolFilterInput%2522%253A%2522pdc%2522%252C%2522finalGeekInputHidden%2522%253A%2522pdc%2522%257D%257D" target="_blank" rel="noopener noreferrer" data-tooltip="Server TIBCO elaawifoua03">
+              <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua03</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawifoua05</div>
+            <a class="node node-tibco" href="https://elaawifoua03.risorse.enel:8778/tea/view/BusinessWorks/appnodes/default?domain=dterfour09869&agentID=BW6Network&cool_filter_level-1=%257B%2522geekMode%2522%253Afalse%252C%2522filterData%2522%253A%257B%2522data%2522%253A%255B%255D%252C%2522coolFilterInput%2522%253A%2522pdc%2522%252C%2522finalGeekInputHidden%2522%253A%2522pdc%2522%257D%257D" target="_blank" rel="noopener noreferrer" data-tooltip="Server TIBCO elaawifoua05">
+              <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua05</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawifoua09</div>
+            <a class="node node-tibco" href="https://elaawifoua03.risorse.enel:8778/tea/view/BusinessWorks/appnodes/default?domain=dterfour09869&agentID=BW6Network&cool_filter_level-1=%257B%2522geekMode%2522%253Afalse%252C%2522filterData%2522%253A%257B%2522data%2522%253A%255B%255D%252C%2522coolFilterInput%2522%253A%2522pdc%2522%252C%2522finalGeekInputHidden%2522%253A%2522pdc%2522%257D%257D" target="_blank" rel="noopener noreferrer" data-tooltip="Server TIBCO elaawifoua09">
+              <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua09</span>
+            </a>
+          </div>
+          <div class="server-group">
+            <div class="server-group-title">Server elaawifoua10</div>
+            <a class="node node-tibco" href="https://elaawifoua03.risorse.enel:8778/tea/view/BusinessWorks/appnodes/default?domain=dterfour09869&agentID=BW6Network&cool_filter_level-1=%257B%2522geekMode%2522%253Afalse%252C%2522filterData%2522%253A%257B%2522data%2522%253A%255B%255D%252C%2522coolFilterInput%2522%253A%2522pdc%2522%252C%2522finalGeekInputHidden%2522%253A%2522pdc%2522%257D%257D" target="_blank" rel="noopener noreferrer" data-tooltip="Server TIBCO elaawifoua10">
+              <span class="icon">⚡</span><span class="label">PDC_INT elaawifoua10</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- connector TIBCO → DB (fan) -->
-    <div class="connector" style="min-width:70px;">
-      <svg class="svg-connector" width="70" height="280">
+    <!-- connector TIBCO → DB -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
         <defs>
-          <marker id="arr6" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#85c1e9" opacity="0.7"/>
+          <marker id="arr6" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#85c1e9" opacity="0.7"/>
           </marker>
         </defs>
-        <line x1="40" y1="44"  x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
-        <line x1="40" y1="108" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
-        <line x1="40" y1="172" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
-        <line x1="40" y1="236" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#3498db" stroke-width="2" marker-end="url(#arr6)"/>
       </svg>
     </div>
 
