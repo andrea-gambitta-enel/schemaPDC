@@ -205,10 +205,18 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
+    }
+
+    .jboss-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
       padding: 12px 10px;
       border: 1px dashed #3d2060;
       border-radius: 12px;
       background: rgba(142, 68, 173, 0.04);
+      width: 100%;
     }
 
     .server-grid {
@@ -450,7 +458,7 @@
         <div class="group-label">Apache on premise</div>
         <div class="server-grid">
           <div class="server-group">
-            <div class="server-group-title">elaawipdcf02</div>
+              <div class="server-group-title">Server elaawipdcf02</div>
             <a class="node node-aaas"
                href="http://elaawipdcf02.dmzmi.enel/jkstatus"
                target="_blank"
@@ -462,7 +470,7 @@
             </a>
           </div>
           <div class="server-group">
-            <div class="server-group-title">elaawipdcf03</div>
+              <div class="server-group-title">Server elaawipdcf03</div>
             <a class="node node-aaas"
                href="http://elaawipdcf03.dmzmi.enel/jkstatus"
                target="_blank"
@@ -493,50 +501,73 @@
     <div class="col">
       <div class="col-label">Application Server</div>
       <div class="jboss-group">
-        <div class="group-label">JBoss Cluster raggruppato per server</div>
-        <div class="server-grid">
-          <div class="server-group">
-            <div class="server-group-title">Server elaawipdcj11</div>
-            <div class="server-nodes">
-              <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 1">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir1</span>
-              </a>
-              <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 5">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir5</span>
-              </a>
+        <div class="jboss-section">
+          <div class="group-label">server OLD</div>
+          <div class="server-grid">
+            <div class="server-group">
+              <div class="server-group-title">Server elaawipdcj11</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 1">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir1</span>
+                </a>
+                <a class="node node-jboss" href="http://elaawipdcj11.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj11 - istanza 5">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir5</span>
+                </a>
+              </div>
+            </div>
+            <div class="server-group">
+              <div class="server-group-title">Server elaawipdcj12</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 2">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir2</span>
+                </a>
+                <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 6">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir6</span>
+                </a>
+              </div>
+            </div>
+            <div class="server-group">
+              <div class="server-group-title">Server elaawipdcj13</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 3">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir3</span>
+                </a>
+                <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 7">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir7</span>
+                </a>
+              </div>
+            </div>
+            <div class="server-group">
+              <div class="server-group-title">Server elaawipdcj14</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 4">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir4</span>
+                </a>
+                <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 8">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir8</span>
+                </a>
+              </div>
             </div>
           </div>
-          <div class="server-group">
-            <div class="server-group-title">Server elaawipdcj12</div>
-            <div class="server-nodes">
-              <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 2">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir2</span>
-              </a>
-              <a class="node node-jboss" href="http://elaawipdcj12.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj12 - istanza 6">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir6</span>
-              </a>
+        </div>
+        <div class="jboss-section">
+          <div class="group-label">server NEW</div>
+          <div class="server-grid">
+            <div class="server-group">
+              <div class="server-group-title">SERVER elaawzpdcj15</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawzpdcj15.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawzpdcj15 - istanza 21">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir21</span>
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="server-group">
-            <div class="server-group-title">Server elaawipdcj13</div>
-            <div class="server-nodes">
-              <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 3">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir3</span>
-              </a>
-              <a class="node node-jboss" href="http://elaawipdcj13.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj13 - istanza 7">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir7</span>
-              </a>
-            </div>
-          </div>
-          <div class="server-group">
-            <div class="server-group-title">Server elaawipdcj14</div>
-            <div class="server-nodes">
-              <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 4">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir4</span>
-              </a>
-              <a class="node node-jboss" href="http://elaawipdcj14.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawipdcj14 - istanza 8">
-                <span class="icon">☕</span><span class="label">i1jbepdcauir8</span>
-              </a>
+            <div class="server-group">
+              <div class="server-group-title">SERVER elaawzpdcj16</div>
+              <div class="server-nodes">
+                <a class="node node-jboss" href="http://elaawzpdcj16.enelint.global:8080/pdcConsole/pages/diagnostici/list/listaDiagnostici.jsf" target="_blank" rel="noopener noreferrer" data-tooltip="Server elaawzpdcj16 - istanza 22">
+                  <span class="icon">☕</span><span class="label">i1jbepdcauir22</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
