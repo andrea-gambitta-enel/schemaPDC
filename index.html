@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schema Architetturale PDC</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0f1923;
+      color: #e0e6ef;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      color: #7ecfff;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #6b8099;
+      margin-bottom: 40px;
+    }
+
+    /* ── MAIN DIAGRAM ─────────────────────────────────────────── */
+    .diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 24px 16px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ── COLUMN ───────────────────────────────────────────────── */
+    .col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .col-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4e6a82;
+      margin-bottom: 4px;
+    }
+
+    /* ── COMPONENT NODE ──────────────────────────────────────── */
+    a.node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 14px 18px;
+      min-width: 110px;
+      min-height: 70px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      cursor: pointer;
+      position: relative;
+      border: 1.5px solid transparent;
+    }
+
+    a.node:hover {
+      transform: translateY(-3px) scale(1.04);
+      filter: brightness(1.18);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+      z-index: 10;
+    }
+
+    a.node .icon {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+
+    a.node .label {
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    a.node .sublabel {
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    /* ── COLOUR THEMES ───────────────────────────────────────── */
+    .node-sii {
+      background: linear-gradient(135deg, #1a3a5c, #0d2137);
+      border-color: #2e7bc4;
+      color: #7ecfff;
+    }
+
+    .node-apache {
+      background: linear-gradient(135deg, #3d1a00, #1e0d00);
+      border-color: #c45f1a;
+      color: #ffa05e;
+    }
+
+    .node-lb {
+      background: linear-gradient(135deg, #1a3320, #0d1f12);
+      border-color: #27ae60;
+      color: #6ddf9a;
+    }
+
+    .node-jboss {
+      background: linear-gradient(135deg, #2a1a3d, #160d23);
+      border-color: #8e44ad;
+      color: #c39bd3;
+    }
+
+    .node-tibco {
+      background: linear-gradient(135deg, #3d2a00, #231800);
+      border-color: #d4ac0d;
+      color: #f7dc6f;
+    }
+
+    .node-db {
+      background: linear-gradient(135deg, #1c1c3d, #0e0e23);
+      border-color: #3498db;
+      color: #85c1e9;
+    }
+
+    /* ── CONNECTOR ───────────────────────────────────────────── */
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 4px;
+      min-width: 56px;
+    }
+
+    /* Vertical fan lines for 1-to-many */
+    .fan-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Simple horizontal arrow */
+    .arrow-line {
+      width: 56px;
+      height: 2px;
+      background: linear-gradient(90deg, #2e7bc4, #4aafff);
+      position: relative;
+    }
+
+    .arrow-line::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: -4px;
+      border: 5px solid transparent;
+      border-left: 8px solid #4aafff;
+    }
+
+    /* SVG connectors */
+    .svg-connector {
+      overflow: visible;
+    }
+
+    /* ── JBOSS GROUP ─────────────────────────────────────────── */
+    .jboss-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border: 1px dashed #3d2060;
+      border-radius: 12px;
+      background: rgba(142, 68, 173, 0.04);
+    }
+
+    .group-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7d5a9a;
+      align-self: flex-start;
+      padding-left: 2px;
+    }
+
+    /* ── TIBCO GROUP ─────────────────────────────────────────── */
+    .tibco-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border: 1px dashed #5a4400;
+      border-radius: 12px;
+      background: rgba(212, 172, 13, 0.04);
+    }
+
+    /* ── LEGEND ──────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 40px;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #6b8099;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ── TOOLTIP ─────────────────────────────────────────────── */
+    a.node::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e3248;
+      color: #b0cde8;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      border: 1px solid #2e4a68;
+      z-index: 100;
+    }
+
+    a.node:hover::before { opacity: 1; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .diagram { flex-direction: column; align-items: center; }
+      .connector { transform: rotate(90deg); }
+      .arrow-line { width: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>&#9741; Schema Architetturale PDC</h1>
+  <p class="subtitle">Flusso dati da SII → Apache → Load Balancer → JBoss × 8 → Load Balancer → TIBCO × 4 → Database</p>
+
+  <div class="diagram">
+
+    <!-- ── 1. SII ──────────────────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Sistema Esterno</div>
+      <a class="node node-sii"
+         href="https://placeholder.example.com/sii"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-tooltip="Sistema Informativo Integrato (SII)">
+        <span class="icon">🌐</span>
+        <span class="label">SII</span>
+        <span class="sublabel">Sistema Esterno</span>
+      </a>
+    </div>
+
+    <!-- connector SII → Apache -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
+        <defs>
+          <marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#4aafff" opacity="0.7"/>
+          </marker>
+        </defs>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#2e7bc4" stroke-width="2" marker-end="url(#arr1)"/>
+      </svg>
+    </div>
+
+    <!-- ── 2. APACHE ───────────────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Reverse Proxy</div>
+      <a class="node node-apache"
+         href="https://placeholder.example.com/apache"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-tooltip="Apache HTTP Server as a Service">
+        <span class="icon">🔶</span>
+        <span class="label">Apache<br/>aaS</span>
+        <span class="sublabel">HTTP Proxy</span>
+      </a>
+    </div>
+
+    <!-- connector Apache → LB1 -->
+    <div class="connector">
+      <svg class="svg-connector" width="60" height="20">
+        <defs>
+          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#6ddf9a" opacity="0.7"/>
+          </marker>
+        </defs>
+        <line x1="0" y1="10" x2="50" y2="10" stroke="#27ae60" stroke-width="2" marker-end="url(#arr2)"/>
+      </svg>
+    </div>
+
+    <!-- ── 3. LOAD BALANCER 1 ──────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Bilanciatore</div>
+      <a class="node node-lb"
+         href="https://placeholder.example.com/lb1"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-tooltip="Network Load Balancer — Layer 4">
+        <span class="icon">⚖️</span>
+        <span class="label">Load<br/>Balancer 1</span>
+        <span class="sublabel">Network LB</span>
+      </a>
+    </div>
+
+    <!-- connector LB1 → JBoss (fan) -->
+    <div class="connector" style="min-width:70px;">
+      <svg class="svg-connector" width="70" height="460">
+        <defs>
+          <marker id="arr3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#c39bd3" opacity="0.7"/>
+          </marker>
+        </defs>
+        <!-- 8 lines fanning out: center = 230, spacing = 52 -->
+        <line x1="0"  y1="230" x2="30"  y2="26"  stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="78"  stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="130" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="182" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="278" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="330" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="382" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+        <line x1="0"  y1="230" x2="30"  y2="434" stroke="#8e44ad" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr3)"/>
+      </svg>
+    </div>
+
+    <!-- ── 4. JBOSS x8 ────────────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Application Server</div>
+      <div class="jboss-group">
+        <div class="group-label">JBoss Cluster (×8)</div>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/1" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 1">
+          <span class="icon">☕</span><span class="label">JBoss 1</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/2" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 2">
+          <span class="icon">☕</span><span class="label">JBoss 2</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/3" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 3">
+          <span class="icon">☕</span><span class="label">JBoss 3</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/4" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 4">
+          <span class="icon">☕</span><span class="label">JBoss 4</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/5" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 5">
+          <span class="icon">☕</span><span class="label">JBoss 5</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/6" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 6">
+          <span class="icon">☕</span><span class="label">JBoss 6</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/7" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 7">
+          <span class="icon">☕</span><span class="label">JBoss 7</span>
+        </a>
+        <a class="node node-jboss" style="min-width:100px;min-height:58px;"
+           href="https://placeholder.example.com/jboss/8" target="_blank" rel="noopener noreferrer" data-tooltip="JBoss Instance 8">
+          <span class="icon">☕</span><span class="label">JBoss 8</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- connector JBoss → LB2 (fan) -->
+    <div class="connector" style="min-width:70px;">
+      <svg class="svg-connector" width="70" height="460">
+        <defs>
+          <marker id="arr4" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#6ddf9a" opacity="0.7"/>
+          </marker>
+        </defs>
+        <line x1="40" y1="26"  x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="78"  x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="130" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="182" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="278" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="330" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="382" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+        <line x1="40" y1="434" x2="70" y2="230" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr4)"/>
+      </svg>
+    </div>
+
+    <!-- ── 5. LOAD BALANCER 2 ──────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Bilanciatore</div>
+      <a class="node node-lb"
+         href="https://placeholder.example.com/lb2"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-tooltip="Network Load Balancer — Layer 4">
+        <span class="icon">⚖️</span>
+        <span class="label">Load<br/>Balancer 2</span>
+        <span class="sublabel">Network LB</span>
+      </a>
+    </div>
+
+    <!-- connector LB2 → TIBCO (fan) -->
+    <div class="connector" style="min-width:70px;">
+      <svg class="svg-connector" width="70" height="280">
+        <defs>
+          <marker id="arr5" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#f7dc6f" opacity="0.7"/>
+          </marker>
+        </defs>
+        <line x1="0" y1="140" x2="40" y2="44"  stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
+        <line x1="0" y1="140" x2="40" y2="108" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
+        <line x1="0" y1="140" x2="40" y2="172" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
+        <line x1="0" y1="140" x2="40" y2="236" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr5)"/>
+      </svg>
+    </div>
+
+    <!-- ── 6. TIBCO x4 ────────────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Integration Layer</div>
+      <div class="tibco-group">
+        <div class="group-label">TIBCO BW Cluster (×4)</div>
+        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
+           href="https://placeholder.example.com/tibco/node1" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 1">
+          <span class="icon">⚡</span><span class="label">TIBCO Node 1</span>
+        </a>
+        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
+           href="https://placeholder.example.com/tibco/node2" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 2">
+          <span class="icon">⚡</span><span class="label">TIBCO Node 2</span>
+        </a>
+        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
+           href="https://placeholder.example.com/tibco/node3" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 3">
+          <span class="icon">⚡</span><span class="label">TIBCO Node 3</span>
+        </a>
+        <a class="node node-tibco" style="min-width:110px;min-height:58px;"
+           href="https://placeholder.example.com/tibco/node4" target="_blank" rel="noopener noreferrer" data-tooltip="TIBCO BW AppNode 4">
+          <span class="icon">⚡</span><span class="label">TIBCO Node 4</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- connector TIBCO → DB (fan) -->
+    <div class="connector" style="min-width:70px;">
+      <svg class="svg-connector" width="70" height="280">
+        <defs>
+          <marker id="arr6" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#85c1e9" opacity="0.7"/>
+          </marker>
+        </defs>
+        <line x1="40" y1="44"  x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
+        <line x1="40" y1="108" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
+        <line x1="40" y1="172" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
+        <line x1="40" y1="236" x2="70" y2="140" stroke="#3498db" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr6)"/>
+      </svg>
+    </div>
+
+    <!-- ── 7. DATABASE ────────────────────────────────── -->
+    <div class="col">
+      <div class="col-label">Persistenza</div>
+      <a class="node node-db"
+         href="https://placeholder.example.com/database"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-tooltip="Database — Oracle/PostgreSQL">
+        <span class="icon">🗄️</span>
+        <span class="label">Database</span>
+        <span class="sublabel">Oracle / PG</span>
+      </a>
+    </div>
+
+  </div><!-- /diagram -->
+
+  <!-- ── LEGEND ──────────────────────────────────────── -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#2e7bc4"></div> SII</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c45f1a"></div> Apache aaS</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div> Load Balancer</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8e44ad"></div> JBoss (×8)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d4ac0d"></div> TIBCO BW (×4)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3498db"></div> Database</div>
+  </div>
+
+  <p style="margin-top:28px;font-size:0.7rem;color:#2e4a60;">
+    Clicca su ogni componente per aprire il link di dettaglio in un nuovo tab &mdash; PDC Architecture © 2026
+  </p>
+
+</body>
+</html>
